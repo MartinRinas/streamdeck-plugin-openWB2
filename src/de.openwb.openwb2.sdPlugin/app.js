@@ -10,7 +10,8 @@ function subscribeMqtt(broker, topic) {
 	clientid = makeId(8)
 
 	console.log(clientid)
-	client = new Paho.Client(broker, clientid);
+	connectionString = constructConnectionString(broker);
+	client = new Paho.Client(connectionString, clientid);
 	client.connect({
 		onSuccess: () => {
 			client.subscribe(topic);
@@ -58,6 +59,8 @@ function storeContextToTopicMapping(topic, context) {
 	contextToTopicMapping.set(topic, context);
 }
 
+
+
 /**
  * Fetches the context associated with a topic.
  * @param {string} topic - The MQTT topic.
@@ -81,6 +84,15 @@ function makeId(length) {
    }
    return result;
 }
+/**
+ * Generates ws connection string for given host and port
+ * @param {string} host The hostname or IP address of the broker
+ * @param {number} [port=80] The port of the broker (optional, default is 80).
+ * @returns 
+ */
+function constructConnectionString(host, port = 80) {
+	return `ws://${host}:${port}/ws`;
+}
 
 const myAction = new Action('de.openwb.openwb2.action');
 
@@ -102,10 +114,24 @@ myAction.onDialRotate(({ action, context, device, event, payload }) => {
 });
 
 myAction.onKeyDown(({ action, context, device, event, payload })=> {
-	console.log("Set title")
-	console.log(context)
-	$SD.setTitle(context,"25W")
+	console.log("Key down event received");
+	console.log(context);
 	//	let settings = payload.settings;
 
 //	sendMqtt(context, settings.valBroker, settings.valPort, settings.valUsername, settings.valPassword, settings.valSsl, settings.valClientId, settings.valTopic, settings.valMessage, settings.valRetain);
+});
+
+myAction.onWillAppear(({ action, context, device, event, payload }) => {
+	console.log('Retrieving settings for context:', context);
+	$SD.getSettings(context);
+});
+
+myAction.didReceiveSettings(({ context, payload }) => {
+	console.log('Settings received:', payload);
+	//check if setting has topic and is of correct type
+	// store context to topic mapping
+	//storeContextToTopicMapping(payload.valTopic, context);
+	// subscribe to topic
+	//subscribeMqtt(payload.valBroker, payload.valTopic);
+
 });
