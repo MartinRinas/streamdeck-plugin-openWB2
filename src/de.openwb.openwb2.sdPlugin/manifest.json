@@ -38,11 +38,10 @@
 			},
 			"States": [
 				{
-					"Image": "actions/template/assets/action"
 				}
 			],
 			"Tooltip": "This is an example tooltip",
-			"UUID": "com.elgato.template.action",
+			"UUID": "de.openwb.openwb2.action",
 			"PropertyInspectorPath": "actions/template/property-inspector/inspector.html"
 		}
 	]

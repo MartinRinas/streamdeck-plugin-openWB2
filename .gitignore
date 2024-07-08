@@ -1,7 +1,7 @@
 .DS_Store
 .idea/**
 /src/DistributionTool
-com.elgato.template.streamDeckPlugin
+de.openwb.openwb2.streamDeckPlugin
 .vscode/**
 package.json
 package-lock.json
